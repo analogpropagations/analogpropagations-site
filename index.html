@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analog Propagations — Midnight Radio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --night: #090b0f;
+    --road: #f5f0e8;
+    --amber: #e8a020;
+    --amber-dim: #7a4f08;
+    --amber-glow: rgba(232, 160, 32, 0.08);
+    --warm-white: #f0e8d8;
+    --muted: #6b6456;
+    --tower: #c8d4e0;
+    --static: #ddd8ce;
+    --ink: #1a1612;
+  }
+
+  html, body {
+    background: var(--road);
+    color: var(--warm-white);
+    min-height: 100vh;
+    font-family: 'Lora', Georgia, serif;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO LOCKUP ── */
+  .hero {
+    min-height: 52vh;
+    background: var(--night);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Stars */
+  .stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 12%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 28% 8%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 42% 18%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 58% 6%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 71% 14%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 84% 9%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 93% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 7% 25%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 62% 22%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 88% 28%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 40%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 35%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 76% 38%, rgba(255,255,255,0.2) 0%, transparent 100%);
+  }
+
+  /* Radio tower - SVG drawn in CSS */
+  .tower {
+    position: absolute;
+    right: 8%;
+    top: 2rem;
+    width: 120px;
+    opacity: 0.25;
+    animation: towerFade 4s ease-in-out infinite alternate;
+  }
+
+  .tower svg { width: 100%; height: auto; }
+
+  /* Tower beacon pulse */
+  .beacon {
+    position: absolute;
+    right: calc(8% + 54px);
+    top: 2rem;
+    width: 10px;
+    height: 10px;
+    background: var(--amber);
+    border-radius: 50%;
+    animation: beacon 2s ease-in-out infinite;
+    box-shadow: 0 0 14px 5px rgba(232, 160, 32, 0.7);
+  }
+
+  @keyframes beacon {
+    0%, 100% { opacity: 1; box-shadow: 0 0 12px 4px rgba(232,160,32,0.6); }
+    50% { opacity: 0.2; box-shadow: 0 0 4px 1px rgba(232,160,32,0.2); }
+  }
+
+  @keyframes towerFade {
+    from { opacity: 0.25; }
+    to { opacity: 0.45; }
+  }
+
+  /* Horizon glow - distant city */
+  .horizon {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(
+      to top,
+      transparent 0%,
+      rgba(20, 14, 4, 0.2) 40%,
+      transparent 100%
+    );
+  }
+
+  /* Fade hero into cream at bottom */
+  .road {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30%;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(245, 240, 232, 0.7) 50%,
+      rgba(245, 240, 232, 1) 100%
+    );
+    z-index: 4;
+  }
+
+  /* Center line perspective */
+  .centerline {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 28%;
+    background: linear-gradient(to bottom, transparent, rgba(232,160,32,0.15) 40%, rgba(232,160,32,0.06));
+    clip-path: polygon(35% 0%, 65% 0%, 100% 100%, 0% 100%);
+  }
+
+  /* Ambient amber dashboard glow from below */
+  .dashboard-glow {
+    position: absolute;
+    bottom: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(ellipse at center top, rgba(232,160,32,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    position: relative;
+    z-index: 10;
+    padding: 0 3rem;
+    max-width: 820px;
+  }
+
+  /* Pre-title */
+  .pretitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s ease forwards;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .pretitle::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--amber);
+    opacity: 0.5;
+  }
+
+  /* Main title */
+  .masthead {
+    font-family: 'Abril Fatface', Georgia, serif;
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s ease forwards;
+  }
+
+  .masthead .line1 {
+    display: block;
+    color: var(--warm-white);
+  }
+
+  .masthead .line2 {
+    display: block;
+    color: var(--amber);
+    font-style: italic;
+  }
+
+  /* Tagline */
+  .tagline {
+    font-family: 'Lora', Georgia, serif;
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    font-style: italic;
+    line-height: 1.65;
+    color: rgba(240, 232, 216, 0.6);
+    max-width: 44ch;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.7s ease forwards;
+  }
+
+  .tagline strong {
+    color: rgba(240, 232, 216, 0.9);
+    font-style: normal;
+  }
+
+  /* Nav */
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    opacity: 0;
+    animation: fadeUp 1s 0.9s ease forwards;
+  }
+
+  nav a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(240, 232, 216, 0.55);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(240, 232, 216, 0.15);
+    border-right: none;
+    transition: all 0.2s;
+  }
+
+  nav a:last-child { border-right: 1px solid rgba(240, 232, 216, 0.15); }
+  nav a:hover {
+    color: var(--amber);
+    border-color: var(--amber-dim);
+    background: var(--amber-glow);
+  }
+
+  /* Static/signal line decoration */
+  .signal-line {
+    position: absolute;
+    bottom: 32%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(232,160,32,0.06) 20%,
+      rgba(232,160,32,0.15) 45%,
+      rgba(232,160,32,0.08) 55%,
+      transparent 100%
+    );
+  }
+
+  /* ── CONTENT SECTION ── */
+  .main {
+    background: var(--road);
+    border-top: none;
+    padding: 2rem 3rem 4rem;
+    max-width: 820px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--amber-dim);
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0.8;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--static), transparent);
+  }
+
+  .entries { display: flex; flex-direction: column; }
+
+  .entry {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--static);
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 2rem;
+    transition: all 0.2s;
+  }
+
+  .entry:last-child { border-bottom: none; }
+  .entry:hover { background: rgba(232,160,32,0.04); margin: 0 -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
+
+  .entry-meta { padding-top: 0.2rem; }
+
+  .entry-category {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--amber-dim);
+    opacity: 0.8;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  .entry-date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.5rem;
+    font-weight: 300;
+    color: var(--muted);
+    display: block;
+  }
+
+  .entry-title {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 0.6rem;
+    color: var(--ink);
+  }
+
+  .entry-title a {
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .entry-title a:hover { color: var(--amber-dim); }
+
+  .entry-body {
+    font-size: 0.875rem;
+    line-height: 1.8;
+    color: #5a4f42;
+    margin-bottom: 0.75rem;
+  }
+
+  .entry-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.55rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .entry-link:hover { color: var(--amber-dim); }
+
+  /* Footer */
+  footer {
+    background: var(--road);
+    border-top: 1px solid var(--static);
+    padding: 2rem 3rem;
+    max-width: 820px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .footer-note {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.55rem;
+    font-weight: 300;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    line-height: 2;
+  }
+
+  .footer-freq {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.55rem;
+    font-weight: 300;
+    color: var(--amber);
+    opacity: 0.4;
+    white-space: nowrap;
+    letter-spacing: 0.1em;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .content, .main, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .entry { grid-template-columns: 1fr; gap: 0.5rem; }
+    .tower { display: none; }
+    .beacon { display: none; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="stars"></div>
+  <div class="horizon"></div>
+  <div class="road"></div>
+  <div class="centerline"></div>
+  <div class="dashboard-glow"></div>
+  <div class="signal-line"></div>
+
+  <!-- Tower -->
+  <div class="tower">
+    <svg viewBox="0 0 60 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="30" y1="0" x2="30" y2="160" stroke="#c8d4e0" stroke-width="1.5"/>
+      <line x1="30" y1="0" x2="5" y2="160" stroke="#c8d4e0" stroke-width="1"/>
+      <line x1="30" y1="0" x2="55" y2="160" stroke="#c8d4e0" stroke-width="1"/>
+      <line x1="30" y1="40" x2="12" y2="80" stroke="#c8d4e0" stroke-width="0.75"/>
+      <line x1="30" y1="40" x2="48" y2="80" stroke="#c8d4e0" stroke-width="0.75"/>
+      <line x1="30" y1="80" x2="18" y2="120" stroke="#c8d4e0" stroke-width="0.75"/>
+      <line x1="30" y1="80" x2="42" y2="120" stroke="#c8d4e0" stroke-width="0.75"/>
+      <line x1="8" y1="80" x2="52" y2="80" stroke="#c8d4e0" stroke-width="0.75"/>
+      <line x1="15" y1="120" x2="45" y2="120" stroke="#c8d4e0" stroke-width="0.75"/>
+      <!-- Antenna arms -->
+      <line x1="20" y1="20" x2="40" y2="20" stroke="#c8d4e0" stroke-width="0.75"/>
+      <line x1="25" y1="10" x2="35" y2="10" stroke="#c8d4e0" stroke-width="0.75"/>
+    </svg>
+  </div>
+  <div class="beacon"></div>
+
+  <div class="content">
+    <div class="pretitle">Traveling on its own wavelength</div>
+    <div class="masthead">
+      <span class="line1">Analog</span>
+      <span class="line2">Propagations</span>
+    </div>
+    <p class="tagline">
+      A public commonplace book. Things that earn their place — objects, music, food, writing. Discovered slowly. Signal over noise.
+    </p>
+    <nav>
+      <a href="#">Listening</a>
+      <a href="#">Reading</a>
+      <a href="#">Places</a>
+      <a href="#">Objects</a>
+      <a href="#about">About</a>
+    </nav>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div style="max-width:820px; margin: 0 auto;">
+<div class="main">
+  <div class="section-label">Recent transmissions</div>
+  <div class="entries">
+
+    <div class="entry">
+      <div class="entry-meta">
+        <span class="entry-category">Listening</span>
+        <span class="entry-date">Mar 2026</span>
+      </div>
+      <div>
+        <div class="entry-title"><a href="https://radio.garden" target="_blank">Radio Garden</a></div>
+        <p class="entry-body">A spinning globe. Every dot a live radio station. Click one somewhere in coastal Japan at midnight and you're there — a DJ talking between songs in a language you don't speak, weather you'll never feel, music you'd never have found. Radio Garden is technically an app but the experience is something older. Presence without travel. Discovery without an algorithm deciding what you're ready for.</p>
+        <p class="entry-body" style="margin-top: 0.5rem;">Three worth finding: <a href="https://radio.garden/listen/fip/yC579hBh" target="_blank" class="entry-link">FIP Paris</a> &nbsp;·&nbsp; <a href="https://radio.garden/listen/ashiya-fm/YHsNyFVH" target="_blank" class="entry-link">Ashiya Radio, Japan</a> &nbsp;·&nbsp; <a href="https://radio.garden/listen/pan-african-space-station/YJfMnqDK" target="_blank" class="entry-link">Pan African Space Station</a></p>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-meta">
+        <span class="entry-category">Objects</span>
+        <span class="entry-date">Mar 2026</span>
+      </div>
+      <div>
+        <div class="entry-title"><a href="https://www.jetpens.com/Midori-MD-Notebook-A5-Lined/pd/4237" target="_blank">Midori MD Notebook A5, Lined</a></div>
+        <p class="entry-body">The paper is the point. Cream-toned, slightly toothy, fountain pen ink sits on it without bleeding or feathering. The MD is minimal to the point of near-invisibility as an object — no branding on the cover, no elastic, no pocket. Just paper doing what paper should do. Buy one before you think you need it.</p>
+        <a href="https://www.jetpens.com/Midori-MD-Notebook-A5-Lined/pd/4237" target="_blank" class="entry-link">JetPens →</a>
+      </div>
+    </div>
+
+    <div id="about" class="entry">
+      <div class="entry-meta">
+        <span class="entry-category">About</span>
+      </div>
+      <div>
+        <p class="entry-body">This site exists because good things deserve to find people. No agenda, no algorithm, no schedule, no sponsor. Just a record of what's proven itself worth the attention.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-note">
+    No algorithm. No sponsor. Links may earn a small commission.<br>
+    Only things actually owned or experienced. · <a href="https://bsky.app/profile/analogpropagations.bsky.social" target="_blank" style="color: inherit; text-decoration: none; border-bottom: 1px solid var(--muted);">@analogpropagations on Bluesky</a>
+  </div>
+  <div class="footer-freq">14.225 MHz</div>
+</footer>
+</div>
+
+</body>
+</html>

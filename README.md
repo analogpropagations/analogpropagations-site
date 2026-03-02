@@ -32,10 +32,9 @@ Copy this block and paste it before the closing `</div>` of the `.entries` div. 
 ```
 
 ### Notes on writing entries
-- Keep it to 2-3 paragraphs max
+- 2-3 paragraphs max
 - Write about why it earned its place, not what it is
 - One link at the bottom — the most useful one
-- Affiliate links are fine, just make sure it's something you actually own or have experienced
 
 ---
 
@@ -46,7 +45,7 @@ Copy this block and paste it before the closing `</div>` of the `.entries` div. 
 | **Listening** | Records, radio stations, podcasts, anything heard |
 | **Reading** | Books, essays, longform — things worth finishing |
 | **Places** | Locations, moments, photography — anywhere worth going or remembering |
-| **Objects** | Things owned and used — gear, tools, notebooks, pens |
+| **Objects** | Things owned and used — gear, tools, notebooks, etc |
 
 ---
 

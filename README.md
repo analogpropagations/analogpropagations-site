@@ -64,8 +64,6 @@ Copy this block and paste it before the closing `</div>` of the `.entries` div. 
 
 - **Repo:** GitHub (`analogpropagations-site`)
 - **Host:** Netlify (auto-deploys on push to main)
-- **Domain:** Registered via Namecheap with privacy enabled
-- **Bluesky:** Claim handle, eventually set domain as identifier
 
 ---
 
